@@ -1,0 +1,48 @@
+dll_opts	= /bd /d1
+ext		= for
+cmp		= wfc386
+opts		= /q /xline /expl /os
+linker = wlink
+all : .symbolic SRXfunc.dll
+    @%null
+
+funcload.obj : funcload.for
+	$(cmp) $(opts) $(dll_opts) $^&
+
+srxmd5.obj : srxmd5.for
+	$(cmp) $(opts) $(dll_opts) $^&
+
+ctchars.obj : ctchars.for
+	$(cmp) $(opts) $(dll_opts) $^&
+
+srxroll1.obj : srxroll1.for
+	$(cmp) $(opts) $(dll_opts) $^&
+
+srxsha.obj : srxsha.for
+	$(cmp) $(opts) $(dll_opts) $^&
+
+srxmd4.obj : srxmd4.for
+	$(cmp) $(opts) $(dll_opts) $^&
+
+rxsutils.obj : rxsutils.for
+	$(cmp) $(opts) $(dll_opts) $^&
+
+SRXFUNC.DLL : funcload.obj srxmd4.obj ctchars.obj srxroll1.obj srxmd5.obj srxsha.obj rxsutils.obj 
+	@set lnk=$^&.lnk
+	@%create $(%lnk)
+	@%append $(%lnk) debug all
+	@%append $(%lnk) system os2v2 dll initinstance terminstance
+	@%append $(%lnk) option manyautodata, map, case
+	@%append $(%lnk) file funcload, srxmd4, ctchars, srxroll1, srxmd5,  srxsha, rxsutils
+	@%append $(%lnk) library rexx
+	@%append $(%lnk) export SRXLoadFuncs resident
+	@%append $(%lnk) export SRXDropFuncs resident
+	@%append $(%lnk) export SRX_MD5 resident
+	@%append $(%lnk) export SRX_ROLL32 resident
+	@%append $(%lnk) export SRX_COUNT_CHARS resident
+	@%append $(%lnk) export SRX_MD4 resident
+ 	@%append $(%lnk) export SRX_SHA resident
+	$(linker) name $^& @$(%lnk)
+
+clean : .symbolic
+	@-del *.lnk *.dll *.map *.obj 1>nul 2>nul

@@ -1,0 +1,32 @@
+        Archive Filename: REXX_MD5.ZIP
+       Short Description: REXX callable procedures for computing MD4 and MD5 digests
+
+        Long Description: 
+ REXX_MD5 contains several OS/2 REXX tools that allow you to compute
+ the MD4 and MD5 digest of any string. Included are "all REXX" procedures
+ for computing MD4 and MD5 digests, and a "REXX callable DLL" that
+ contains procedures for computing MD4 and MD5 digests. 
+ Although the "all REXX"  procedures are easier to work with (they
+ are text files suitable for inclusion in your own REXX code),
+ they are MUCH slower then the "dll" versions.
+
+      Proposed directory
+           for placement: /pub/os2/dev/rexx             
+
+               Your name:  Daniel Hellerstein
+           Email address:  danielh@crosslink.net
+    Program contact name: (same)
+   Program contact email: (same)
+             Program URL: (none) 
+
+      Would you like the
+   contact email address
+    included in listings? yes
+
+Operating System/Version: OS/2
+ Additional requirements: (none)
+
+                Replaces: REXX_MD5.ZIP (this is a maintenance release)
+
+
+

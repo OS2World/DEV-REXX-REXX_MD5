@@ -1,0 +1,92 @@
+9 April 2000
+
+                Description of procedures in SRXFUNC.DLL
+
+To load these parameters you can use:
+
+   rsync_load_dlls:procedure
+   if rxfuncquery('srxloadfuncs')=1  then do
+     call RXFuncAdd 'SRXLoadFuncs', 'SRXFUNC', 'SRXLoadFuncs'
+     call SRXLoadFuncs
+   end
+   if rxfuncquery('srxloadfuncs')=1  then do
+      return "ERROR could not load  SRXFUNC.DLL"
+   end
+
+To unload, you can use:
+   call srxunloadfuncs
+
+Procedures:
+
+   md4=srx_Md4(string)   : md4 hash of a string 
+        32 hex characters
+
+   md5=srx_Md5(string)   : md5 hash of a string  
+         32 hex characters 
+
+      or, to build and MD5 from N sequential "pieces" of a string
+      (or file):
+        
+        stuff=srx_md5(piece1,0)
+        stuff=srx_md5(piece2,0,stuff)
+         ...
+        md5=srx_md5(piece_last,1,stuff)
+        
+        Note that piece1 ... piece_last-1 MUST have lengths that
+        are multiples of 64 bytes. The last piece can be any size.
+
+      Note: when:
+              a) rapidly calling SRX_MD5
+              b) with large arguments
+              c) from multiple threads
+            SYS3175 errors may occur.
+            This can be avoided by using the "sequential build"
+            mode of SRX_MD5 -- see MD5_FILE.CMD for an example.
+
+   sha=srx_sha(string)   : sha-1 hash of a string 
+        Five, space delimited, 8 character hex words
+
+   chksum32=srx_roll32(string) :a "rolling checksum" of a string
+        8 hex characters.
+
+        Note: if 
+            astring is nc characters long
+            chksum= the 32 bit (8 hex character) checkum of astring
+            alpha= integer values of last 4 characters of chksum
+            beta= integer values of first 4 characters of chksum
+        
+         Then:
+            the rolling checksum from dropping the first character of
+            astring (say, with value=k1) and adding a new
+            character on end (say, with value=k2) can be computed as:
+
+            alpha=mod(alpha-k1+k2,65536)
+
+            beta=beta+alpha-(nc*k1)
+            beta=mod(beta,65536)
+
+            new_checksum=alpha +  (65536*ibeta)
+
+            And this can be repeated, using these new values of alpha and beta            
+
+       Bonus: call it with a second string argument, and a sequence of
+              rolling checksums will be created, by adding the 
+              the charactes from this second string argument sequentially
+              (and dropping earlier characters).  
+               The return is a 4*(N+1) character string, with each
+               4 characters the 32bit checksum (where N is the length
+               of the second string).
+               Thus, the integer value of the first checksum can be read using
+                   c2d(left(stuff,4))
+               
+
+     stuff=srx_count_chars(astring)
+          A 2046 (256*8) hex character string. The nth 8 byte character
+          substring is the number of occurences of the "nth-1" character.
+          For example, the number of occurences of "A" (ascii 65) 
+          would be:
+              noccurences=x2c(substr(stuff,((65-1)*8)+1,8))
+                
+
+Daniel Hellerstein (danielh@crosslink.net)
+
